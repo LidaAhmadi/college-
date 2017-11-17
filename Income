@@ -1,0 +1,28 @@
+
+# “Is there an association between college major category and income?”
+library(dplyr)
+summary(college)
+
+head(college$major_category)
+
+
+college$major_category<-factor(college$major_category)
+summary(college$major_category)
+
+plot(median~major_category, college)
+
+mean(college$sample_size)
+
+fit<-aov(median[college$sample_size>350]~major_category[college$sample_size>350],college)
+summary(fit)
+#----------------------------------------------------------------
+#Sidenote: Majors and genders interact with each other:
+
+college <- mutate(college, MaleD = 1 * (perc_men > .50))
+college$MaleD=factor(college$MaleD)
+
+fit2<-aov(median~major_category+MaleD+major_category*MaleD,college)
+summary(fit2)
+interaction.plot(college$median,college$major_category,college$MaleD, ylim=c(5000,10000))
+
+dance_save("~/Desktop/college_major_analysis.rds")
